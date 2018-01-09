@@ -105,22 +105,22 @@ def error_from_response(response):
     return error_str
 
 
-def jsonify_attribute_name(name):
-    return name.replace('__', '.').replace('_', '-')
-
-
-def dejsonify_attribute_name(name):
-    return name.replace('.', '__').replace('-', '_')
-
-
-def jsonify_attribute_names(iterable):
-    for i in iterable:
-        yield jsonify_attribute_name(i)
-
-
-def dejsonify_attribute_names(iterable):
-    for i in iterable:
-        yield dejsonify_attribute_name(i)
+# def jsonify_attribute_name(name):
+#     return name.replace('__', '.').replace('_', '-')
+#
+#
+# def dejsonify_attribute_name(name):
+#     return name.replace('.', '__').replace('-', '_')
+#
+#
+# def jsonify_attribute_names(iterable):
+#     for i in iterable:
+#         yield jsonify_attribute_name(i)
+#
+#
+# def dejsonify_attribute_names(iterable):
+#     for i in iterable:
+#         yield dejsonify_attribute_name(i)
 
 
 async def execute_async(func, *args):
@@ -166,7 +166,7 @@ class AttributeProxy:
 
     def __getattr__(self, item):
         try:
-            return self[jsonify_attribute_name(item)]
+            return self[item]
         except KeyError:
             raise AttributeError
 
@@ -174,7 +174,7 @@ class AttributeProxy:
         if key == '_target_object':
             return super().__setattr__(key, value)
         try:
-            self[jsonify_attribute_name(key)] = value
+            self[key] = value
         except KeyError:
             raise AttributeError
 

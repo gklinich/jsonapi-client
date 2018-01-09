@@ -40,7 +40,7 @@ from urllib.parse import ParseResult, urlparse
 
 import jsonschema
 
-from .common import jsonify_attribute_name, error_from_response, \
+from .common import error_from_response, \
     HttpStatus, HttpMethod
 from .exceptions import DocumentError, AsyncError
 
@@ -203,8 +203,8 @@ class Session:
         more_fields.update(fields)
 
         for key, value in more_fields.items():
-            if key not in fields:
-                key = jsonify_attribute_name(key)
+            # if key not in fields:
+            #     key = jsonify_attribute_name(key)
             props = schema['properties'].get(key, {})
             if 'relation' in props:
                 res_types = props['resource']

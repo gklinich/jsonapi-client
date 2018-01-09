@@ -35,7 +35,7 @@ from itertools import chain
 from typing import Optional, Union, Awaitable, TYPE_CHECKING
 from urllib.parse import urlparse
 
-from .common import AbstractJsonObject, jsonify_attribute_name, ResourceTuple
+from .common import AbstractJsonObject, ResourceTuple
 from .resourceobject import ResourceObject
 
 if TYPE_CHECKING:
@@ -54,7 +54,7 @@ class Meta(AbstractJsonObject):
         self.meta = data
 
     def __getattr__(self, name):
-        return self.meta.get(jsonify_attribute_name(name))
+        return self.meta.get(name)
 
     def __getitem__(self, name):
         return self.meta.get(name)

@@ -34,8 +34,7 @@ import logging
 from itertools import chain
 from typing import Set, Optional, Awaitable, Union, Iterable, TYPE_CHECKING
 
-from .common import (jsonify_attribute_name, AbstractJsonObject,
-                     dejsonify_attribute_names, HttpMethod, HttpStatus, AttributeProxy,
+from .common import (AbstractJsonObject, HttpMethod, HttpStatus, AttributeProxy,
                      cached_property, RelationType)
 from .exceptions import ValidationError, DocumentInvalid
 
@@ -115,7 +114,7 @@ class AttributeDict(dict):
         :param attr_name: Name of this map object.
         """
         self._check_invalid()
-        name = jsonify_attribute_name(attr_name)
+        name = attr_name
         self[name] = AttributeDict(data={}, name=name, parent=self, resource=self._resource)
 
     def _check_invalid(self):
@@ -123,7 +122,6 @@ class AttributeDict(dict):
             raise DocumentInvalid('Resource has been invalidated.')
 
     def __getattr__(self, name):
-        name = jsonify_attribute_name(name)
         if name not in self:
             raise AttributeError(f'No such attribute '
                                  f'{self._resource.type}.{self._full_name}.{name}')
@@ -137,7 +135,6 @@ class AttributeDict(dict):
     def __setattr__(self, name, value):
         if name.startswith('_'):
             return super().__setattr__(name, value)
-        name = jsonify_attribute_name(name)
         self[name] = value
 
     def mark_dirty(self, name: str):
@@ -219,7 +216,7 @@ class AttributeDict(dict):
         """
         Pythonized version of contained keys (attribute names).
         """
-        yield from dejsonify_attribute_names(self.keys())
+        yield from self.keys()
 
 
 class RelationshipDict(dict):
@@ -270,7 +267,7 @@ class RelationshipDict(dict):
         """
         From data and/or provided relation_type, determine Relationship class
         to be used.
-        
+
         :param data: Source data dictionary
         :param relation_type: either 'to-one' or 'to-many'
         """
@@ -312,7 +309,7 @@ class RelationshipDict(dict):
         """
         Pythonized version of contained keys (relationship names)
         """
-        yield from dejsonify_attribute_names(self.keys())
+        yield from self.keys()
 
     @property
     def is_dirty(self) -> bool:
